@@ -139,6 +139,7 @@ local function createTableView( tableView, options )
 	view._friction = opt.friction or 0.972
 	view._maxVelocity = opt.maxVelocity or 2
 	view._timeHeld = 0
+	view._ignoreTap = false
 	view._isLocked = opt.isLocked
 	view._hideScrollBar = opt.hideScrollBar
 	view._rows = {}
@@ -283,17 +284,22 @@ local function createTableView( tableView, options )
 	-- Handle touches on the tableView
 	function view:touch( event )
 		local phase = event.phase
-		
+
 		-- Set the time held
 		if "began" == phase then
 			self._timeHeld = event.time
+			self._ignoreTap = false;
+
+			if (math.abs(self._velocity) > 0.05) then
+				self._ignoreTap = true;
+			end
 			
 			-- Set the initial touch
 			if not self._initalTouch then
 				self._initialTouch = true
 			end
 		end	
-		
+
 		-- Distance moved
         local dy = mAbs( event.y - event.yStart )
 		local moveThresh = 20
@@ -784,7 +790,7 @@ local function createTableView( tableView, options )
 		local row = event.target
 		
 		-- If tap's are allowed on the row at this time
-		if not row._cannotTap then
+		if not row._cannotTap and not row.parent._ignoreTap then
 			if "function" == type( view._onRowTouch ) then
 				local newEvent =
 				{
