@@ -219,8 +219,8 @@ local function initWithImage( progressView, options )
 			
 			-- If the fill is animated
 			if view._isAnimated then
-				transition.to( view._fillMiddle, { time=4000,width = view._currentPercent, x = view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + ( view._currentPercent * 0.5 ) } )
-				transition.to( view._fillRight, { time=4000,x = mFloor( view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + view._currentPercent + ( view._fillRight.contentWidth * 0.5 ) ) } )
+				transition.to( view._fillMiddle, { width = view._currentPercent, x = view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + ( view._currentPercent * 0.5 ) } )
+				transition.to( view._fillRight, { x = mFloor( view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + view._currentPercent + ( view._fillRight.contentWidth * 0.5 ) ) } )
 			else
 			-- The fill isn't animated
 				view._fillMiddle.width = view._currentPercent
