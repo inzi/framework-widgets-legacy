@@ -110,7 +110,7 @@ local function initWithImage( progressView, options )
 
 	-- Set the fill's initial width
 	viewFillMiddle.width = 1
-	viewFillMiddle.x = viewFillLeft.x + viewFillMiddle.width * 0.5
+	viewFillMiddle.x = viewFillLeft.x + ( viewFillLeft.width * 0.5 ) + (viewFillMiddle.width * 0.5)
 	viewFillMiddle.y = progressView.y + ( viewFillMiddle.contentHeight * 0.5 ) + opt.fillYOffset
 	
 	-- OUTER MIDDLE
@@ -119,7 +119,7 @@ local function initWithImage( progressView, options )
 	viewOuterMiddle.y = progressView.y + ( viewOuterMiddle.contentHeight * 0.5 )
 	
 	-- Set the right fills position
-	viewFillRight.x = viewFillLeft.x + viewFillMiddle.width + ( viewFillRight.contentWidth * 0.5 )
+	viewFillRight.x = viewFillLeft.x + viewFillMiddle.width + ( viewFillLeft.width * 0.5 ) + ( viewFillRight.contentWidth * 0.5 )
 	viewFillRight.y = progressView.y + ( viewFillRight.contentHeight * 0.5 ) + opt.fillYOffset
 	
 	-- OUTER RIGHT
@@ -219,13 +219,13 @@ local function initWithImage( progressView, options )
 			
 			-- If the fill is animated
 			if view._isAnimated then
-				transition.to( view._fillMiddle, { width = view._currentPercent, x = view._fillLeft.x + view._currentPercent * 0.5 } )
-				transition.to( view._fillRight, { x = mFloor( view._fillLeft.x + view._currentPercent + view._fillRight.contentWidth * 0.5  ) } )
+				transition.to( view._fillMiddle, { time=4000,width = view._currentPercent, x = view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + ( view._currentPercent * 0.5 ) } )
+				transition.to( view._fillRight, { time=4000,x = mFloor( view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + view._currentPercent + ( view._fillRight.contentWidth * 0.5 ) ) } )
 			else
 			-- The fill isn't animated
 				view._fillMiddle.width = view._currentPercent
-				view._fillMiddle.x = view._fillLeft.x + view._currentPercent * 0.5
-				view._fillRight.x = mFloor( view._fillLeft.x + view._currentPercent + view._fillRight.contentWidth * 0.5  )
+				view._fillMiddle.x = view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + ( view._currentPercent * 0.5 )
+				view._fillRight.x = mFloor( view._fillLeft.x + ( view._fillLeft.width * 0.5 ) + view._currentPercent + ( view._fillRight.contentWidth * 0.5 ) )
 			end
 		end
  	end
