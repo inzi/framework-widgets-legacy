@@ -75,12 +75,20 @@ local function initWithImage( spinner, options )
 	-- We need to assign these properties to the object
 	view._deltaAngle = opt.deltaAngle
 	view._increments = opt.increments
-	
+
+	-------------------------------------------------------
+	-- auto-hide when inactive
+	-------------------------------------------------------	
+	if opt.autoHide then
+		view.isVisible = false;
+	end
+
 	-------------------------------------------------------
 	-- Assign properties/objects to the spinner
 	-------------------------------------------------------
 	
 	-- Assign objects to the spinner
+	spinner._autoHide = opt.autoHide;
 	spinner._imageSheet = imageSheet
 	spinner._view = view
 	
@@ -94,6 +102,10 @@ local function initWithImage( spinner, options )
 		local function rotateSpinner()
 			self._view:rotate( self._view._deltaAngle )
 		end
+		
+		if self._autoHide then
+			self._view.isVisible = true
+		end
 			
 		-- If the timer doesn't exist > Create it
 		if not self._view._timer then
@@ -106,6 +118,10 @@ local function initWithImage( spinner, options )
 	
 	-- Function to pause the spinner's rotation
 	function spinner:stop()
+		if self._autoHide then
+			self._view.isVisible = false
+		end
+		
 		-- Pause the spinner's timer
 		if self._view._timer then
 			timer.pause( self._view._timer )
@@ -164,11 +180,17 @@ local function initWithSprite( spinner, options )
 	view.x = spinner.x + ( view.contentWidth * 0.5 )
 	view.y = spinner.y + ( view.contentHeight * 0.5 )
 	
+	-- auto-hide when inactive
+	if opt.autoHide then
+		view.isVisible = false;
+	end
+	
 	-------------------------------------------------------
 	-- Assign properties/objects to the spinner
 	-------------------------------------------------------
 	
 	-- Assign objects to the spinner
+	spinner._autoHide = opt.autoHide;
 	spinner._imageSheet = imageSheet
 	spinner._view = view
 	
@@ -178,11 +200,19 @@ local function initWithSprite( spinner, options )
 	
 	-- Function to start the spinner's animation
 	function spinner:start()
+		if self._autoHide then
+			self._view.isVisible = true
+		end
+		
 		self._view:play()
 	end
 	
 	-- Function to pause the spinner's animation
 	function spinner:stop()
+		if self._autoHide then
+			self._view.isVisible = false
+		end
+		
 		self._view:pause()
 	end
 	
@@ -225,6 +255,16 @@ function M.new( options, theme )
 	opt.animTime = customOptions.time or themeOptions.time or 1000
 	opt.deltaAngle = customOptions.deltaAngle or themeOptions.deltaAngle or 1
 	opt.increments = customOptions.incrementEvery or themeOptions.incrementEvery or 1
+	
+	opt.autoHide = (function() -- (inline function) boolean options require more complex handling for correct return values
+		if customOptions.autoHide ~= nil then
+			return customOptions.autoHide
+		elseif themeOptions.autoHide ~= nil then
+			return themeOptions.autoHide
+		end
+		
+		return false
+	end)()
 		
 	-- Frames & Images
 	opt.sheet = customOptions.sheet
